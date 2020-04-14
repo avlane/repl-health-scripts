@@ -1,0 +1,7 @@
+*.log
+*.out
+*.bak
+*.sqlcmdout
+local/
+.vscode/
+.DS_Store

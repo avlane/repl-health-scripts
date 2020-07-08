@@ -22,7 +22,13 @@ SELECT  c.name AS category,
              WHEN 3 THEN N'Canceled'
              WHEN 4 THEN N'In progress'
         END AS last_run_status,
-        lr.last_run_seconds
+        lr.last_run_seconds,
+        CASE WHEN c.name IN (N'REPL-LogReader', N'REPL-Distribution', N'REPL-QueueReader')
+                  AND NOT (ja.start_execution_date IS NOT NULL AND ja.stop_execution_date IS NULL)
+             THEN N'CHECK: continuous agent is not running'
+             WHEN lr.run_status = 0 THEN N'CHECK: last run failed'
+             ELSE N''
+        END AS needs_attention
 FROM msdb.dbo.sysjobs AS j
 JOIN msdb.dbo.syscategories AS c ON c.category_id = j.category_id
 LEFT JOIN msdb.dbo.sysjobactivity AS ja

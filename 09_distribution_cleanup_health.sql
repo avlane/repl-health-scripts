@@ -25,3 +25,15 @@ FROM sys.dm_db_partition_stats AS ps
 WHERE ps.object_id IN (OBJECT_ID(N'dbo.MSrepl_commands'), OBJECT_ID(N'dbo.MSrepl_transactions'))
   AND ps.index_id IN (0, 1)
 GROUP BY ps.object_id;
+
+
+-- Age of the oldest transaction still stored. If this is much larger than the
+-- maximum distribution retention, cleanup is not removing rows.
+SELECT  MIN(t.entry_time) AS oldest_transaction,
+        DATEDIFF(HOUR, MIN(t.entry_time), GETDATE()) AS oldest_transaction_age_hours
+FROM dbo.MSrepl_transactions AS t;
+
+-- Commands already delivered to every subscriber but not yet cleaned up.
+SELECT  SUM(ds.DelivCmdsInDistDB)   AS delivered_cmds_awaiting_cleanup,
+        SUM(ds.UndelivCmdsInDistDB) AS undelivered_cmds
+FROM dbo.MSdistribution_status AS ds;

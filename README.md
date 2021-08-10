@@ -9,6 +9,15 @@ token script runs on the publisher.
 | script | what it does |
 |---|---|
 | `01_agent_job_status.sql` | replication agent jobs and their last outcome |
+| `02_undistributed_commands.sql` | command backlog per subscription and estimated catch-up time |
+| `03_replication_errors.sql` | recent `MSrepl_errors` rows with a hint for common error numbers |
+| `04_find_failing_command.sql` | decode the command behind a failing `xact_seqno` with `sp_browsereplcmds` |
+| `05_tracer_token_latency.sql` | tracer token latency per hop (publisher) |
+| `06_subscription_validation.sql` | request validation and read the results from agent history |
+| `07_agent_history_latency.sql` | latest Log Reader / Distribution Agent delivery rate and latency |
+| `08_merge_identity_ranges.sql` | merge identity range sizes and data type headroom (publisher) |
+| `09_distribution_cleanup_health.sql` | cleanup retention and table sizes in `distribution` |
+| `run_all.sql` | sqlcmd runner for the read-only distributor checks |
 
 ## Conventions
 

@@ -37,3 +37,20 @@ FROM dbo.MSrepl_transactions AS t;
 SELECT  SUM(ds.DelivCmdsInDistDB)   AS delivered_cmds_awaiting_cleanup,
         SUM(ds.UndelivCmdsInDistDB) AS undelivered_cmds
 FROM dbo.MSdistribution_status AS ds;
+
+
+-- Last outcome of the cleanup jobs (history cleanup and distribution cleanup).
+SELECT  j.name AS job_name,
+        msdb.dbo.agent_datetime(h.run_date, h.run_time) AS last_run_time,
+        CASE h.run_status WHEN 0 THEN N'Failed' WHEN 1 THEN N'Succeeded' WHEN 2 THEN N'Retry'
+                          WHEN 3 THEN N'Canceled' END AS last_run_status,
+        (h.run_duration / 10000) * 3600 + ((h.run_duration / 100) % 100) * 60 + (h.run_duration % 100) AS duration_seconds
+FROM msdb.dbo.sysjobs AS j
+CROSS APPLY (
+    SELECT TOP (1) jh.run_date, jh.run_time, jh.run_status, jh.run_duration
+    FROM msdb.dbo.sysjobhistory AS jh
+    WHERE jh.job_id = j.job_id AND jh.step_id = 0
+    ORDER BY jh.instance_id DESC
+) AS h
+WHERE j.name LIKE N'Distribution clean up:%'
+   OR j.name LIKE N'History clean up:%';

@@ -8,7 +8,7 @@ USE distribution;
 GO
 SET NOCOUNT ON;
 
-DECLARE @HoursBack int = 24;
+DECLARE @HoursBack int = 24;   -- same name and unit (hours) as 06 and 07
 
 SELECT TOP (200)
         e.id,

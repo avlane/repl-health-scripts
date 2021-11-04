@@ -19,7 +19,7 @@ USE distribution;
 GO
 SET NOCOUNT ON;
 
-DECLARE @HoursBack int = 72;
+DECLARE @HoursBack int = 72;   -- validation runs are rare, so look further back than 03
 
 SELECT  da.name AS agent_name,
         da.publication,

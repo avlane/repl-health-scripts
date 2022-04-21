@@ -9,6 +9,8 @@ USE distribution;
 GO
 SET NOCOUNT ON;
 
+DECLARE @WarnPct decimal(5, 1) = 50.0;     -- flag subscriptions past this share of retention
+
 ;WITH last_sync AS (
     SELECT  h.agent_id, MAX(h.time) AS last_sync_time
     FROM dbo.MSdistribution_history AS h
@@ -24,7 +26,10 @@ SELECT  da.publisher_db,
         DATEDIFF(HOUR, ls.last_sync_time, GETDATE()) AS hours_since_sync,
         CASE WHEN p.retention > 0
              THEN CONVERT(decimal(5, 1), 100.0 * DATEDIFF(HOUR, ls.last_sync_time, GETDATE()) / p.retention)
-        END AS pct_of_retention_used
+        END AS pct_of_retention_used,
+        CASE WHEN p.retention > 0
+              AND 100.0 * DATEDIFF(HOUR, ls.last_sync_time, GETDATE()) / p.retention >= @WarnPct
+             THEN N'WARN: approaching expiration' ELSE N'' END AS status
 FROM dbo.MSdistribution_agents AS da
 JOIN dbo.MSpublications AS p
   ON p.publisher_id = da.publisher_id

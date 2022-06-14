@@ -1,14 +1,23 @@
 /*
     03_replication_errors.sql
     Run on: the distributor.
-    Recent rows from MSrepl_errors, newest first, with a short hint for the
-    error numbers that cause most replication incidents.
+    Part 1: error count per hour, to see when a problem started.
+    Part 2: recent rows from MSrepl_errors, newest first, with a short hint for
+    the error numbers that cause most replication incidents.
 */
 USE distribution;
 GO
 SET NOCOUNT ON;
 
 DECLARE @HoursBack int = 24;   -- same name and unit (hours) as 06 and 07
+
+SELECT  DATEADD(HOUR, DATEDIFF(HOUR, 0, e.time), 0) AS error_hour,
+        e.error_code,
+        COUNT(*) AS error_count
+FROM dbo.MSrepl_errors AS e
+WHERE e.time >= DATEADD(HOUR, -@HoursBack, GETDATE())
+GROUP BY DATEADD(HOUR, DATEDIFF(HOUR, 0, e.time), 0), e.error_code
+ORDER BY error_hour DESC, error_count DESC;
 
 SELECT TOP (200)
         e.id,

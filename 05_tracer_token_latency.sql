@@ -29,6 +29,8 @@ EXEC sys.sp_posttracertoken
      @publication = @publication,
      @tracer_token_id = @tracer_token_id OUTPUT;
 
+-- A publication with no subscriptions never returns rows, so the loop is
+-- bounded by @timeout_seconds instead of waiting for a result.
 WHILE @waited <= @timeout_seconds
 BEGIN
     WAITFOR DELAY '00:00:05';
@@ -44,6 +46,9 @@ BEGIN
        AND NOT EXISTS (SELECT 1 FROM #history WHERE subscriber_commit IS NULL)
         BREAK;
 END
+
+IF NOT EXISTS (SELECT 1 FROM #history)
+    PRINT N'No tracer token history returned. Does the publication have subscriptions and a running Log Reader?';
 
 SELECT  @publication AS publication,
         @tracer_token_id AS tracer_token_id,

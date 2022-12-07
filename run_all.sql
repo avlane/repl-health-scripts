@@ -12,3 +12,5 @@
 :r 03_replication_errors.sql
 :r 06_subscription_validation.sql
 :r 07_agent_history_latency.sql
+:r 09_distribution_cleanup_health.sql
+:r 10_subscription_expiration.sql

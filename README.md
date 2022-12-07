@@ -17,6 +17,7 @@ token script runs on the publisher.
 | `07_agent_history_latency.sql` | latest Log Reader / Distribution Agent delivery rate and latency |
 | `08_merge_identity_ranges.sql` | merge identity range sizes and data type headroom (publisher) |
 | `09_distribution_cleanup_health.sql` | cleanup retention and table sizes in `distribution` |
+| `10_subscription_expiration.sql` | share of the retention period each transactional subscription has used |
 | `run_all.sql` | sqlcmd runner for the read-only distributor checks |
 
 ## Conventions
@@ -42,4 +43,13 @@ REPL-Snapshot     SQLPROD01-SalesDB-Pub_Sales-1              1       Not running
 publication tracer_token_id subscriber pub_to_dist_seconds dist_to_sub_seconds overall_seconds token_state
 ----------- --------------- ---------- ------------------- ------------------- --------------- ---------
 Pub_Sales   -2147483640     SQLDR02    1                   2                   3               delivered
+```
+
+`10_subscription_expiration.sql`
+
+```
+publisher_db publication subscriber retention_hours last_sync_time        hours_since_sync pct_of_retention_used status
+------------ ----------- ---------- --------------- -------------------- ---------------- --------------------- ----------------------------
+SalesDB      Pub_Sales   SQLDR02    336             2022-11-30 06:14:02  190              56.5                  WARN: approaching expiration
+SalesDB      Pub_Sales   SQLRPT03   336             2022-12-05 21:40:18  4                1.2
 ```

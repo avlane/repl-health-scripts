@@ -23,6 +23,7 @@ SELECT  c.name AS category,
              WHEN 4 THEN N'In progress'
         END AS last_run_status,
         lr.last_run_seconds,
+        lr.last_failure_message,
         CASE WHEN j.enabled = 0 THEN N'Disabled'
              WHEN c.name IN (N'REPL-LogReader', N'REPL-Distribution', N'REPL-QueueReader')
                   AND NOT (ja.start_execution_date IS NOT NULL AND ja.stop_execution_date IS NULL)
@@ -42,7 +43,11 @@ OUTER APPLY (
            h.run_status,
            (h.run_duration / 10000) * 3600
          + ((h.run_duration / 100) % 100) * 60
-         + (h.run_duration % 100) AS last_run_seconds
+         + (h.run_duration % 100) AS last_run_seconds,
+           (SELECT TOP (1) f.message
+            FROM msdb.dbo.sysjobhistory AS f
+            WHERE f.job_id = j.job_id AND f.step_id > 0 AND f.run_status = 0
+            ORDER BY f.instance_id DESC) AS last_failure_message
     FROM msdb.dbo.sysjobhistory AS h
     WHERE h.job_id = j.job_id
       AND h.step_id = 0

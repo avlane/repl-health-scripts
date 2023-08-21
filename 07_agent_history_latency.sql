@@ -38,3 +38,16 @@ SELECT  N'Distribution' AS agent_type, agent_name, subscriber_db AS database_nam
         delivered_commands, comments
 FROM dh
 WHERE rn = 1;
+
+-- Retries and failures per agent over the look-back window.
+DECLARE @HoursBack int = 24;
+
+SELECT  a.name AS agent_name,
+        SUM(CASE WHEN h.runstatus = 5 THEN 1 ELSE 0 END) AS retry_rows,
+        SUM(CASE WHEN h.runstatus = 6 THEN 1 ELSE 0 END) AS fail_rows
+FROM dbo.MSdistribution_history AS h
+JOIN dbo.MSdistribution_agents  AS a ON a.id = h.agent_id
+WHERE h.time >= DATEADD(HOUR, -@HoursBack, GETDATE())
+GROUP BY a.name
+HAVING SUM(CASE WHEN h.runstatus IN (5, 6) THEN 1 ELSE 0 END) > 0
+ORDER BY fail_rows DESC, retry_rows DESC;

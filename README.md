@@ -20,6 +20,15 @@ token script runs on the publisher.
 | `10_subscription_expiration.sql` | share of the retention period each transactional subscription has used |
 | `run_all.sql` | sqlcmd runner for the read-only distributor checks |
 
+## Permissions
+
+Run as a member of `sysadmin` where possible. The least you need:
+
+* distributor: `db_datareader` on `distribution` plus execute on `sp_browsereplcmds`
+  and `sp_replmonitorsubscriptionpendingcmds` (members of `replmonitor` can run the latter)
+* `msdb`: `SQLAgentReaderRole` to read job history for every job
+* publisher: `db_owner` on the published database for tracer tokens and validation
+
 ## Conventions
 
 * Server names in examples are fictional (`SQLPROD01`, `DIST01`, `SQLDR02`).

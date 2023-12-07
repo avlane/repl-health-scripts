@@ -14,3 +14,5 @@
 :r 07_agent_history_latency.sql
 :r 09_distribution_cleanup_health.sql
 :r 10_subscription_expiration.sql
+:r 11_snapshot_agent_status.sql
+:r 12_replication_inventory.sql

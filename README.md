@@ -18,6 +18,8 @@ token script runs on the publisher.
 | `08_merge_identity_ranges.sql` | merge identity range sizes and data type headroom (publisher) |
 | `09_distribution_cleanup_health.sql` | cleanup retention and table sizes in `distribution` |
 | `10_subscription_expiration.sql` | share of the retention period each transactional subscription has used |
+| `11_snapshot_agent_status.sql` | latest Snapshot Agent run per publication |
+| `12_replication_inventory.sql` | databases that publish, subscribe or host distribution, and log reuse waits |
 | `run_all.sql` | sqlcmd runner for the read-only distributor checks |
 
 ## Permissions

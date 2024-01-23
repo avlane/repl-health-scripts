@@ -9,12 +9,18 @@ USE distribution;
 GO
 SET NOCOUNT ON;
 
+DECLARE @WarnCmds bigint = 100000;      -- backlog that deserves a look
+DECLARE @CritCmds bigint = 1000000;     -- backlog that needs action
+
 SELECT  da.publisher_db,
         da.publication,
         ISNULL(sub.name, N'(anonymous)') AS subscriber,
         da.subscriber_db,
         SUM(ds.UndelivCmdsInDistDB) AS undelivered_cmds,
-        SUM(ds.DelivCmdsInDistDB)   AS delivered_cmds_awaiting_cleanup
+        SUM(ds.DelivCmdsInDistDB)   AS delivered_cmds_awaiting_cleanup,
+        CASE WHEN SUM(ds.UndelivCmdsInDistDB) >= @CritCmds THEN N'CRITICAL'
+             WHEN SUM(ds.UndelivCmdsInDistDB) >= @WarnCmds THEN N'WARN'
+             ELSE N'OK' END AS backlog_status
 FROM dbo.MSdistribution_status AS ds
 JOIN dbo.MSdistribution_agents AS da ON da.id = ds.agent_id
 LEFT JOIN master.sys.servers AS sub ON sub.server_id = da.subscriber_id

@@ -28,3 +28,17 @@ LEFT JOIN sys.dm_hadr_availability_replica_states AS rs
        ON rs.group_id = ag.group_id AND rs.is_local = 1
 WHERE d.is_published = 1 OR d.is_merge_published = 1
 ORDER BY ag.name, d.name;
+
+
+/*
+    After a failover, check that every replica can act as the publisher.
+    Run on the distributor (uncomment and edit the names):
+
+    EXEC sys.sp_validate_replica_hosts_as_publishers
+         @original_publisher  = N'SQLPROD01',
+         @publisher_db        = N'SalesDB',
+         @redirected_publisher = N'SALESAGL';
+
+    It reports a row for each replica and raises an error if a replica cannot
+    connect back to the distributor or is missing from sys.servers there.
+*/

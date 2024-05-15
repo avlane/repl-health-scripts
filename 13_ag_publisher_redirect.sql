@@ -8,6 +8,9 @@
 /* ---- Part 1: distributor ---- */
 USE distribution;
 GO
+IF NOT EXISTS (SELECT 1 FROM dbo.MSredirected_publishers)
+    PRINT N'No redirected publishers configured on this distributor.';
+
 SELECT  rp.original_publisher,
         rp.publisher_db,
         rp.redirected_publisher

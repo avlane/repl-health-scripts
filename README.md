@@ -20,6 +20,8 @@ token script runs on the publisher.
 | `10_subscription_expiration.sql` | share of the retention period each transactional subscription has used |
 | `11_snapshot_agent_status.sql` | latest Snapshot Agent run per publication |
 | `12_replication_inventory.sql` | databases that publish, subscribe or host distribution, and log reuse waits |
+| `13_ag_publisher_redirect.sql` | publisher redirection and AG role for published databases |
+| `00_summary.sql` | one-screen counters: failed agents, backlog, errors, retrying agents |
 | `run_all.sql` | sqlcmd runner for the read-only distributor checks |
 
 ## Permissions

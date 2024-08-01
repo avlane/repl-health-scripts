@@ -7,6 +7,7 @@
     04 and 05 are left out on purpose: 04 needs a failing transaction and 05
     must run on the publisher.
 */
+:r 00_summary.sql
 :r 01_agent_job_status.sql
 :r 02_undistributed_commands.sql
 :r 03_replication_errors.sql

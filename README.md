@@ -66,3 +66,11 @@ publisher_db publication subscriber retention_hours last_sync_time        hours_
 SalesDB      Pub_Sales   SQLDR02    336             2022-11-30 06:14:02  190              56.5                  WARN: approaching expiration
 SalesDB      Pub_Sales   SQLRPT03   336             2022-12-05 21:40:18  4                1.2
 ```
+
+`13_ag_publisher_redirect.sql`, part 1
+
+```
+original_publisher publisher_db redirected_publisher
+------------------ ------------ --------------------
+SQLPROD01          SalesDB      SALESAGL
+```

@@ -33,6 +33,12 @@ Run as a member of `sysadmin` where possible. The least you need:
 * `msdb`: `SQLAgentReaderRole` to read job history for every job
 * publisher: `db_owner` on the published database for tracer tokens and validation
 
+## Tested on
+
+SQL Server 2017, 2019 and 2022 distributors with transactional publications
+(push and pull) and one merge publication. Nothing here needs more than
+SQL Server 2017.
+
 ## Conventions
 
 * Server names in examples are fictional (`SQLPROD01`, `DIST01`, `SQLDR02`).

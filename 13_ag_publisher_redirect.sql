@@ -1,6 +1,6 @@
 /*
     13_ag_publisher_redirect.sql
-    Replication with a publisher database in an Availability Group.
+    Read-only. Replication with a publisher database in an Availability Group.
     Part 1 (distributor): publishers that are redirected to an AG listener.
     Part 2 (each AG replica): published databases and whether this replica is primary.
 */
